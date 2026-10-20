@@ -254,6 +254,9 @@
   .quote blockquote{font-family:var(--serif);font-style:italic;font-size:clamp(1.4rem,4.4vw,2rem);line-height:1.5;color:var(--ink)}
   .quote blockquote::before{content:"“";display:block;font-family:var(--script);font-size:5rem;line-height:.6;color:var(--gold);font-style:normal}
   .quote cite{display:block;margin-top:14px;font-style:normal;letter-spacing:.25em;text-transform:uppercase;font-size:.75rem;color:var(--gold-deep)}
+  .quote-ar blockquote{font-family:var(--arabic);font-style:normal;line-height:1.9}
+  .quote-ar blockquote::before{content:none}
+  .quote-ar cite{font-family:var(--arabic);letter-spacing:0;font-size:1rem}
 
   /* ---------- COUNTDOWN ---------- */
   .countdown{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;max-width:640px;margin:0 auto}
@@ -525,9 +528,9 @@
 
   <!-- QUOTE -->
   <section style="padding-top:20px;padding-bottom:40px">
-    <div class="quote reveal">
-      <blockquote>And among His signs is that He created for you mates from among yourselves, that you may find tranquility in them; and He placed between you affection and mercy.</blockquote>
-      <cite>Surah Ar-Rum · 30:21</cite>
+    <div class="quote quote-ar reveal" lang="ar" dir="rtl">
+      <blockquote>﴿ وَمِنْ آيَاتِهِ أَنْ خَلَقَ لَكُم مِّنْ أَنفُسِكُمْ أَزْوَاجًا لِّتَسْكُنُوا إِلَيْهَا وَجَعَلَ بَيْنَكُم مَّوَدَّةً وَرَحْمَةً ﴾</blockquote>
+      <cite>سورة الروم · الآية ٢١</cite>
     </div>
   </section>
 
