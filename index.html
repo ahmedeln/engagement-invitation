@@ -353,6 +353,11 @@
   .g-item:hover::after{opacity:1}
   .g-item.tall{grid-row:span 2}
   .g-item.wide{grid-column:span 2}
+  .g-item.feature{grid-row:span 4}
+  .g-item video{width:100%;height:100%;object-fit:cover;display:block}
+  .g-item .play{position:absolute;right:12px;bottom:12px;z-index:1;width:34px;height:34px;border-radius:50%;display:grid;place-items:center;background:rgba(255,255,255,.85);color:var(--ink);font-size:.8rem;pointer-events:none}
+  .lightbox video{max-height:86vh;max-width:min(92vw,900px);border-radius:16px;box-shadow:0 30px 80px rgba(0,0,0,.5)}
+  .lightbox [hidden]{display:none}
 
   .drive{
     margin-top:36px;padding:40px 30px;display:grid;grid-template-columns:auto 1fr auto;gap:28px;align-items:center;
@@ -660,11 +665,13 @@
       <div class="divider">♡</div>
     </div>
     <div class="gallery" id="galleryGrid">
-      <div class="g-item tall reveal"><img alt="" loading="lazy" data-fallbacks="images/gallery-1.jpg|https://images.unsplash.com/photo-1519741497674-611481863552?w=700&q=75&auto=format&fit=crop|https://picsum.photos/seed/ms1/600/800"></div>
-      <div class="g-item reveal d1"><img alt="" loading="lazy" data-fallbacks="images/gallery-2.jpg|https://images.unsplash.com/photo-1511285560929-80b456fea0bc?w=700&q=75&auto=format&fit=crop|https://picsum.photos/seed/ms2/600/400"></div>
-      <div class="g-item reveal d2"><img alt="" loading="lazy" data-fallbacks="images/gallery-3.jpg|https://images.unsplash.com/photo-1465495976277-4387d4b0b4c6?w=700&q=75&auto=format&fit=crop|https://picsum.photos/seed/ms3/600/400"></div>
-      <div class="g-item tall reveal d3"><img alt="" loading="lazy" data-fallbacks="images/gallery-4.jpg|https://images.unsplash.com/photo-1529634806980-85c3dd6d34ac?w=700&q=75&auto=format&fit=crop|https://picsum.photos/seed/ms4/600/800"></div>
-      <div class="g-item wide reveal d1"><img alt="" loading="lazy" data-fallbacks="images/gallery-5.jpg|https://images.unsplash.com/photo-1583939003579-730e3918a45a?w=900&q=75&auto=format&fit=crop|https://picsum.photos/seed/ms5/900/400"></div>
+      <div class="g-item feature reveal"><video src="images/video.mp4" autoplay muted loop playsinline preload="metadata"></video><span class="play">▶</span></div>
+      <div class="g-item tall reveal d1"><img alt="" loading="lazy" src="images/gallery-1.jpeg"></div>
+      <div class="g-item tall reveal d2"><img alt="" loading="lazy" src="images/gallery-2.jpeg"></div>
+      <div class="g-item tall reveal d3"><img alt="" loading="lazy" src="images/gallery-3.jpeg"></div>
+      <div class="g-item tall reveal d1"><img alt="" loading="lazy" src="images/gallery-4.jpeg"></div>
+      <div class="g-item tall reveal d2"><img alt="" loading="lazy" src="images/gallery-5.jpeg"></div>
+      <div class="g-item tall reveal d3"><img alt="" loading="lazy" src="images/gallery-6.jpeg"></div>
     </div>
 
     <div class="drive card reveal">
@@ -769,7 +776,7 @@
   <a href="#wishes" title="Wishes"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg></a>
 </nav>
 
-<div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="Photo"><button aria-label="Close">×</button><img alt=""></div>
+<div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="Photo"><button aria-label="Close">×</button><img alt=""><video controls playsinline hidden></video></div>
 <div class="toast" id="toast" role="status"></div>
 
 <script>
@@ -992,9 +999,17 @@ $("#copyDriveBtn").addEventListener("click", () => copy(CONFIG.driveLink, "Album
 
 /* ---------- lightbox ---------- */
 const lb = $("#lightbox");
-$$(".g-item").forEach(g => g.addEventListener("click", () => { $("img", lb).src = $("img", g).currentSrc || $("img", g).src; lb.classList.add("show"); }));
-lb.addEventListener("click", e => { if (e.target !== $("img", lb)) lb.classList.remove("show"); });
-addEventListener("keydown", e => { if (e.key === "Escape") lb.classList.remove("show"); });
+const lbImg = $("img", lb), lbVid = $("video", lb);
+function closeLb() { lb.classList.remove("show"); lbVid.pause(); }
+$$(".g-item").forEach(g => g.addEventListener("click", () => {
+  const v = $("video", g), im = $("img", g);
+  lbImg.hidden = !!v; lbVid.hidden = !v;
+  if (v) { lbVid.src = v.currentSrc || v.src; lbVid.currentTime = 0; lbVid.play().catch(() => {}); }
+  else lbImg.src = im.currentSrc || im.src;
+  lb.classList.add("show");
+}));
+lb.addEventListener("click", e => { if (e.target !== lbImg && e.target !== lbVid) closeLb(); });
+addEventListener("keydown", e => { if (e.key === "Escape") closeLb(); });
 
 /* ---------- song suggestions ---------- */
 const songs = store.get("ms_songs", []);
